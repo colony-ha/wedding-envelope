@@ -105,9 +105,17 @@ $('save').onclick=async()=>{
     const publicUrl=location.href.split('?')[0].split('#')[0]+'?view=invite&id='+encodeURIComponent(result.id);
     let shortUrl=publicUrl;
     try{
-      const shortResponse=await fetch('https://is.gd/create.php?format=simple&url='+encodeURIComponent(publicUrl));
-      const shortText=(await shortResponse.text()).trim();
-      if(shortResponse.ok&&/^https:\/\/is\.gd\/[A-Za-z0-9]+$/.test(shortText))shortUrl=shortText;
+      const shortResponse=await fetch(API_URL+'/api/shorten',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({url:publicUrl})
+      });
+      const shortResult=await shortResponse.json();
+      if(shortResponse.ok&&shortResult.success&&/^https:\/\/is\.gd\/[A-Za-z0-9]+$/.test(shortResult.shortUrl||'')){
+        shortUrl=shortResult.shortUrl;
+      }else{
+        console.warn('is.gd shortening unavailable; using full URL',shortResult);
+      }
     }catch(shortError){console.warn('is.gd shortening unavailable; using full URL',shortError)}
     if(editingSlug&&editingSlug!==x.slug)delete db[editingSlug];
     db[x.slug]={...x,apiId:result.id,publicUrl,shortUrl,expiresAt:result.expiresAt,updatedAt:new Date().toISOString()};
