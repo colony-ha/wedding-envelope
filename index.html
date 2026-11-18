@@ -157,6 +157,7 @@ function buildLongInvitation(x){const safe=esc;const date=x.date?new Date(x.date
 const params=new URLSearchParams(location.search),rawInvite=params.get('data'),inviteId=params.get('id');
 if(params.get('view')==='demo'){
   document.body.classList.add('public-mode');
+  if(!$('publicInvitation')){const publicHolder=document.createElement('div');publicHolder.id='publicInvitation';publicHolder.className='public-invitation';publicHolder.style.display='none';document.body.appendChild(publicHolder);}
   const demo=document.createElement('main');demo.className='demo-page';demo.innerHTML=
     '<header class="demo-head"><div style="color:#d6b36c;font-size:25px">✦ COLONY DIGITAL ✦</div><h1>اختاروا تصميم دعوتكم</h1><p>أربعة تصاميم أنيقة، اختاروا النمط الأقرب لذوقكم واضغطوا على المعاينة لاكتشاف الدعوة كاملة.</p></header>'+
     '<section class="demo-grid">'+
